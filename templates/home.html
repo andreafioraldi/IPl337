@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>IPl337</title>
+</head>
+<body>
+	<center>
+	    <h1>
+	        <font size="8" color="red">I</font>
+	        <font size="8" color="blue">P</font>
+	        <font size="8" color="gray">l</font>
+	        <font size="8" color="green">3</font>
+	        <font size="8" color="yellow">3</font>
+	        <font size="8" color="pink">7</font>
+	    </h1>
+	    
+	    {% if err_msg %}
+	    <h2>3rr0r :(</h2>
+	    {% else %}
+	    <h2>h3770 h4x0r</h2>
+	    {% endif %}
+	    
+		<p>Insert an IP address:
+	        <form action="/">
+	        	<input type="text" size=50 maxsize=200 name="ip"/>
+	        	<input type="SUBMIT" value="View">
+	        </form>
+	    </p>
+	    
+	    {% if err_msg %}
+	    <h3><font color="red">{{ err_msg }}</font></h3>
+	    {% endif %}
+	    
+	</center>
+</body>
+</html>

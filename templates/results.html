@@ -8,12 +8,25 @@ table, th, td {
     border-collapse: collapse;
 }
 </style>
-<title>Url</title>
+<title>IPl337 - Results for {{ ip }}</title>
 </head>
 <body>
-<h1>Results for {{ input_url }}</h1>
+<h1>Results for {{ ip }}</h1>
+
+{% if shodan != None %}
+
+<h3>Shodan Report:</h3>
+<pre>{{ sh }}</pre>
+
+{% endif %}
+
 
 {% if vtotal["response_code"] == 1 %}
+{% if vtotal["verbose_msg"] == "Scan request successfully queued, come back later for the report" %}
+
+<h4>VirusToal scan in queque, refresh to view results</h4>
+
+{% else %}
 
 <h3>VirusTotal Report:</h3>
 <p>Scans count: {{ vtotal["total"] }}</p>
@@ -25,6 +38,7 @@ table, th, td {
         <th>Result</th>
         <th>Detail</th>
     </tr>
+    
     {% for engine in vtotal["scans"] %}
     <tr>
         <td>{{ engine }}</td>
@@ -33,10 +47,12 @@ table, th, td {
         <td>{{ vtotal["scans"][engine]["detail"] }}</td>
     </tr>
     {% endfor %}
+
 </table>
 
 <!--<pre>{{ vtotal_s }}</pre>-->
 
+{% endif %}
 {% endif %}
 
 </body>
