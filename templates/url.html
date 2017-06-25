@@ -2,12 +2,42 @@
 <html>
 <head>
 <meta charset="ISO-8859-1">
+<style>
+table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+</style>
 <title>Url</title>
 </head>
 <body>
 <h1>Results for {{ input_url }}</h1>
-<pre>
-{{ info }}
-</pre>
+
+{% if vtotal["response_code"] == 1 %}
+
+<h3>VirusTotal Report:</h3>
+<p>Scans count: {{ vtotal["total"] }}</p>
+<p>Positives: {{ vtotal["positives"] }}</p>
+<table style="width:100%">
+    <tr>
+        <th>Engine</th>
+        <th>Detected</th> 
+        <th>Result</th>
+        <th>Detail</th>
+    </tr>
+    {% for engine in vtotal["scans"] %}
+    <tr>
+        <td>{{ engine }}</td>
+        <td>{{ vtotal["scans"][engine]["detected"] }}</td>
+        <td>{{ vtotal["scans"][engine]["result"] }}</td>
+        <td>{{ vtotal["scans"][engine]["detail"] }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<!--<pre>{{ vtotal_s }}</pre>-->
+
+{% endif %}
+
 </body>
 </html>
