@@ -7,7 +7,7 @@ import json
 import socket
 import urllib
 
-def generate_data(vtotal, vtotal_ip, shodan):
+def generate_data(vtotal_ip, shodan):
     data = {}
     if "asn" in vtotal_ip:
         data["asn"] = vtotal_ip["asn"]
@@ -27,17 +27,7 @@ def generate_data(vtotal, vtotal_ip, shodan):
         data["city"] = shodan["city"]
     if shodan != None and shodan["city"] != None:
         data["city"] = shodan["city"]
-    if shodan != None and shodan["area_code"] != None:
-        data["area code"] = shodan["area_code"]
-    if shodan != None and shodan["dma_code"] != None:
-        data["dma code"] = shodan["dma_code"]
     
-    if shodan != None and shodan["ports"] != None:
-        if len(shodan["ports"]) > 0:
-            data["ports"] = ""
-            for p in shodan["ports"]:
-                data["ports"] += str(p) + " "
-            data["ports"] = data["ports"][:-2]
     if shodan != None and shodan["hostnames"] != None:
         if len(shodan["hostnames"]) > 0:
             data["hostnames"] = ""
@@ -47,6 +37,16 @@ def generate_data(vtotal, vtotal_ip, shodan):
     
     return data
 
+def generate_ports(shodan):
+    if shodan != None and shodan["ports"] != None and shodan["data"] != None:
+        if len(shodan["ports"]) > 0:
+            ports = {}
+            for p in shodan["ports"]:
+                ports[p] = ("none", "none")
+            for d in shodan["data"]:
+                ports[d["port"]] = (d["transport"], d["_shodan"]["module"])
+            return ports
+    return None
 
 VIRUSTOTAL_API_KEY = '97f4945cb7c4838c3d8348615e81cc292de1b5cd2a7be4a3772d0475815ee9f6'
 SHODAN_API_KEY = 'GEarLJ2xyLPs18TGCoCXrhq6PnPvY28X'
@@ -94,8 +94,9 @@ def index_page():
         vtotal = virustotal_scan(ip)
         vtotal_ip = virustotal_ip_scan(ip)
         shodan = shodan_scan(ip)
-        data = generate_data(vtotal, vtotal_ip, shodan)
-        return flask.render_template("results.html", data = data, ip = ip, vtotal = vtotal, vtotal_ip = vtotal_ip, shodan = shodan, sh=json.dumps(shodan, indent=2))
+        data = generate_data(vtotal_ip, shodan)
+        ports = generate_ports(shodan)
+        return flask.render_template("results.html", data = data, ports = ports, ip = ip, vtotal = vtotal, vtotal_ip = vtotal_ip, ip_vt=json.dumps(vtotal_ip, indent=2))
     else:
         return flask.render_template("home.html")
 
