@@ -13,13 +13,16 @@ table, th, td {
 <body>
 <h1>Results for {{ ip }}</h1>
 
-{% if shodan != None %}
+{% for elem in data %}
+<p>{{ elem }}: {{ data[elem] }}</p>
+{% endfor %}
 
-<h3>Shodan Report:</h3>
-<pre>{{ sh }}</pre>
+<!--{% if vtotal_ip != "null" %}
 
-{% endif %}
-
+<h3>VirusTotal IP Info:</h3>
+<p>Country: {{ vtotal_ip["country"] }}</p>
+<pre>{{ vtotal_ip }}</pre>
+{% endif %}-->
 
 {% if vtotal["response_code"] == 1 %}
 {% if vtotal["verbose_msg"] == "Scan request successfully queued, come back later for the report" %}
@@ -31,28 +34,45 @@ table, th, td {
 <h3>VirusTotal Report:</h3>
 <p>Scans count: {{ vtotal["total"] }}</p>
 <p>Positives: {{ vtotal["positives"] }}</p>
-<table style="width:100%">
-    <tr>
-        <th>Engine</th>
-        <th>Detected</th> 
-        <th>Result</th>
-        <th>Detail</th>
-    </tr>
-    
-    {% for engine in vtotal["scans"] %}
-    <tr>
-        <td>{{ engine }}</td>
-        <td>{{ vtotal["scans"][engine]["detected"] }}</td>
-        <td>{{ vtotal["scans"][engine]["result"] }}</td>
-        <td>{{ vtotal["scans"][engine]["detail"] }}</td>
-    </tr>
-    {% endfor %}
 
-</table>
+<div id="vt_spoiler" style="display:none"> 
+    <table style="width:100%">
+        <tr>
+            <th>Engine</th>
+            <th>Detected</th> 
+            <th>Result</th>
+            <th>Detail</th>
+        </tr>
+        
+        {% for engine in vtotal["scans"] %}
+        <tr>
+            <td>{{ engine }}</td>
+            <td>{{ vtotal["scans"][engine]["detected"] }}</td>
+            <td>{{ vtotal["scans"][engine]["result"] }}</td>
+            <td>{{ vtotal["scans"][engine]["detail"] }}</td>
+        </tr>
+        {% endfor %}
+
+    </table>
+</div> 
+<button title="Show/Hide Antivirus scans" type="button" onclick="if(document.getElementById('vt_spoiler').style.display=='none') {document.getElementById('vt_spoiler').style.display=''} else {document.getElementById('vt_spoiler').style.display='none'}">Show/Hide Antivirus scans</button>
 
 <!--<pre>{{ vtotal_s }}</pre>-->
 
 {% endif %}
+{% endif %}
+
+{% if shodan != None %}
+
+<h3>Shodan Report:</h3>
+<div id="spoiler" style="display:none"> 
+<pre>{{ sh }}</pre>
+</div> 
+<button title="Show/Hide" type="button" onclick="if(document.getElementById('spoiler') .style.display=='none') {document.getElementById('spoiler') .style.display=''}else{document.getElementById('spoiler') .style.display='none'}">Show/Hide</button>
+
+<!--<h3>Shodan Report:</h3>
+<pre>{{ sh }}</pre>-->
+
 {% endif %}
 
 </body>
